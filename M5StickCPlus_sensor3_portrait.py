@@ -53,6 +53,7 @@ _PASSWD="My_WiFi_password"
 _sync_color = m5stack.lcd.GREEN #GREEN=NTP synchronized. RED=not Syncrhonized
 _connected = False
 
+
 # Function to connect to the AP
 def do_connect(ssid, password):
     global _sync_color
@@ -109,33 +110,12 @@ def setup_lcd():
     m5stack.lcd.setCursor(_X_BEGIN, _Y_BEGIN)
 
 
+# The initialization must do on power on.
 def setup():
     global _connected
     setup_lcd()
     _connected = do_connect(_SSID,_PASSWD)
 
-    
-# Display the measured Temperature, Presure and Humidity
-# At the bottom
-def display_TPH_old(x:int, y:int):
-    m5stack.lcd.font(_FONT_MEDIUM)
-    x_offset, y_offset=m5stack.lcd.fontSize()
-    m5stack.lcd.setCursor(x, y)
-    t,p,h = read_TPH()
-    
-    m5stack.lcd.setTextColor(m5stack.lcd.RED, m5stack.lcd.BLACK)
-    text_T = "T {:.1f}".format(t)
-    m5stack.lcd.textClear(x,y,text=text_T)
-    m5stack.lcd.println(text_T)
-
-    #Do not want to show the pressure
-    #m5stack.lcd.setTextColor(m5stack.lcd.YELLOW, m5stack.lcd.BLACK)
-    #text_P = "P: {:.1f}".format(p)
-    #m5stack.lcd.println(text_P)
-    
-    m5stack.lcd.setTextColor(m5stack.lcd.ORANGE, m5stack.lcd.BLACK)
-    text_H = "H {:.1f}".format(h)
-    m5stack.lcd.println(text_H)
     
 
 # Display the measured Temperature, Presure and Humidity
@@ -160,8 +140,7 @@ def display_TPH():
     text_H = "H {:.1f}".format(h)
     #m5stack.lcd.textClear(x,y,text=text_H)
     m5stack.lcd.println(text_H)
-    
-    
+      
 
 # Display the measured Temperature, Presure and Humidity
 # At the bottom
