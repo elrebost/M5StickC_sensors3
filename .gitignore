@@ -1,0 +1,7 @@
+prova
+.env
+prova/*
+.conf
+.cnf
+*old
+secrets.py

@@ -23,6 +23,7 @@ import imu
 import unit
 import ntptime
 import network
+import secrets #secrets.py has the sensitive and not shared data
 
 
 #help(m5stack.lcd)
@@ -47,8 +48,8 @@ _Y_BEGIN=5
 _BRIGHTNESS=80
 _NTP_POOL='es.pool.ntp.org'
 _TIMEZONE=1
-_SSID="My_SSID"
-_PASSWD="My_WiFi_password"
+_SSID=secrets.SSID_NAME
+_PASSWD=secrets.SSID_PASSWD
 
 _sync_color = m5stack.lcd.GREEN #GREEN=NTP synchronized. RED=not Syncrhonized
 _connected = False
