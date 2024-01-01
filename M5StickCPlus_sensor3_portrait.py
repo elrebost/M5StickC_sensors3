@@ -19,30 +19,30 @@ import m5stack
 import time
 import machine
 import imu
-#Per emprar UNITS
+# Per emprar UNITS
 import unit
 import ntptime
 import network
-import secrets #secrets.py has the sensitive and not shared data
+import secrets # secrets.py has the sensitive and not shared data
 
 
-#help(m5stack.lcd)
-#There are 2 different RTC class
-#help(m5stack.rtc)
-#help(machine.rtc)
-#help(ntptime.client.rtc)
-#help(speaker)
-#help(axp) Bateria + power
-#help(imu) accelerometer
-#help(unit) Unitats: SensorIII, PIR, BUZZER, etc
+# help(m5stack.lcd)
+# There are 2 different RTC class
+# help(m5stack.rtc)
+# help(machine.rtc)
+# help(ntptime.client.rtc)
+# help(speaker)
+# help(axp) Bateria + power
+# help(imu) accelerometer
+# help(unit) Unitats: SensorIII, PIR, BUZZER, etc
 
 _FONT_SMALL=m5stack.lcd.FONT_DejaVu24
-#_FONT_SMALL=m5stack.lcd.FONT_Small
+# _FONT_SMALL=m5stack.lcd.FONT_Small
 _FONT_MEDIUM=m5stack.lcd.FONT_DejaVu40
 #_FONT_MEDIUM=m5stack.lcd.FONT_Arial12
 _FONT_BIG=m5stack.lcd.FONT_DejaVu56
-#_FONT_BIG=m5stack.lcd.FONT_Arial16
-#_FONT=m5stack.lcd.FONT_Default
+# _FONT_BIG=m5stack.lcd.FONT_Arial16
+# _FONT=m5stack.lcd.FONT_Default
 _X_BEGIN=5
 _Y_BEGIN=5
 _BRIGHTNESS=80
@@ -51,8 +51,11 @@ _TIMEZONE=1
 _SSID=secrets.SSID_NAME
 _PASSWD=secrets.SSID_PASSWD
 
-_sync_color = m5stack.lcd.GREEN #GREEN=NTP synchronized. RED=not Syncrhonized
+_sync_color = m5stack.lcd.GREEN # GREEN=NTP synchronized. RED=not Syncrhonized
 _connected = False
+
+# Get the ENV III Unit instance
+env3_0 = unit.get(unit.ENV3, unit.PORTA)
 
 
 # Function to connect to the AP
@@ -82,13 +85,13 @@ def do_connect(ssid, password):
 # Function to set the RTC from NTP
 def set_rtc_from_ntp():
     try:
-        #Get and update the RTC time from NTP server
+        # Get and update the RTC time from NTP server
         ntp_client = ntptime.client(host=_NTP_POOL, timezone=(_TIMEZONE))
         m5stack.rtc.setTime(ntp_client.year(),ntp_client.month(),ntp_client.day(),ntp_client.hour(),ntp_client.minute(),ntp_client.second())
         print(m5stack.rtc.now())
-        #Next sentences are not needed
-        #update the time
-        #ntp_client.updateTime()
+        # Next sentences are not needed
+        # update the time
+        # ntp_client.updateTime()
         return True
     except OSError:
         return False
@@ -96,7 +99,6 @@ def set_rtc_from_ntp():
 
 # Return the measured Temperature, Presure and Humidity
 def read_TPH():
-    env3_0 = unit.get(unit.ENV3, unit.PORTA)
     return env3_0.temperature, env3_0.pressure, env3_0.humidity
 
 
@@ -105,8 +107,8 @@ def setup_lcd():
     m5stack.lcd.clear()
     axp.setLcdBrightness(_BRIGHTNESS) # Save some power
     m5stack.lcd.setRotation(m5stack.lcd.PORTRAIT)  # Adjust rotation if needed
-    #m5stack.lcd.font(font [,rotate, transparent, fixedwidth, dist, width, outline, color])
-    #m5stack.lcd.font(font=m5stack.lcd.FONT_Ubuntu, rotate=90, width=100, transparent=True, color=m5stack.lcd.GREEN)
+    # m5stack.lcd.font(font [,rotate, transparent, fixedwidth, dist, width, outline, color])
+    # m5stack.lcd.font(font=m5stack.lcd.FONT_Ubuntu, rotate=90, width=100, transparent=True, color=m5stack.lcd.GREEN)
     m5stack.lcd.font(font=_FONT_MEDIUM)
     m5stack.lcd.setCursor(_X_BEGIN, _Y_BEGIN)
 
@@ -116,8 +118,7 @@ def setup():
     global _connected
     setup_lcd()
     _connected = do_connect(_SSID,_PASSWD)
-
-    
+ 
 
 # Display the measured Temperature, Presure and Humidity
 # At the bottom
@@ -128,18 +129,18 @@ def display_TPH():
     
     m5stack.lcd.setTextColor(m5stack.lcd.RED, m5stack.lcd.BLACK)
     text_T = "T {:.1f}".format(t)
-    #m5stack.lcd.textClear(x,y,text=text_T)
+    # m5stack.lcd.textClear(x,y,text=text_T)
     m5stack.lcd.println(text_T)
 
-    #Do not want to show the pressure
-    #m5stack.lcd.setTextColor(m5stack.lcd.YELLOW, m5stack.lcd.BLACK)
-    #text_P = "P: {:.1f}".format(p)
-    #m5stack.lcd.textClear(x,y,text=text_P)
-    #m5stack.lcd.println(text_P)
+    # Do not want to show the pressure
+    # m5stack.lcd.setTextColor(m5stack.lcd.YELLOW, m5stack.lcd.BLACK)
+    # text_P = "P: {:.1f}".format(p)
+    # m5stack.lcd.textClear(x,y,text=text_P)
+    # m5stack.lcd.println(text_P)
     
     m5stack.lcd.setTextColor(m5stack.lcd.ORANGE, m5stack.lcd.BLACK)
     text_H = "H {:.1f}".format(h)
-    #m5stack.lcd.textClear(x,y,text=text_H)
+    # m5stack.lcd.textClear(x,y,text=text_H)
     m5stack.lcd.println(text_H)
       
 
@@ -160,15 +161,14 @@ def display_time():
     m5stack.lcd.println(text_minute)
     
 
-
 # Display Temperature, Pressure and humidity
 # Current Hour and Minute if it is NTP syncrhonized
 def display_info():
     display_TPH()
     x_offset, y_offset=m5stack.lcd.fontSize()    
     if _connected:
-        #Jump the 3 Lines of TPH (y_offset*3)
-        ##display_time(x=x_offset, y=y_offset*2+_Y_BEGIN)
+        # Jump the 3 Lines of TPH (y_offset*3)
+        ## display_time(x=x_offset, y=y_offset*2+_Y_BEGIN)
         # m5stack.lcd.text_y() gives the next line
         display_time()
         m5stack.lcd.font(_FONT_SMALL)
@@ -177,13 +177,15 @@ def display_info():
         m5stack.lcd.println("WiFi OK",x=m5stack.lcd.CENTER)
     else:
         m5stack.lcd.font(_FONT_BIG)
-        #x_offset, y_offset=m5stack.lcd.fontSize()
+        # x_offset, y_offset=m5stack.lcd.fontSize()
         m5stack.lcd.setCursor(0, m5stack.lcd.text_y()+10)
         m5stack.lcd.setTextColor(_sync_color, m5stack.lcd.BLACK)
         m5stack.lcd.println("NO WiFi",y=m5stack.lcd.BOTTOM)
+
 
 setup()
 while True:
     setup_lcd()
     display_info()
-    time.sleep(60)
+    machine.lightsleep(60 * 1000) # light sleep for 55 seconds
+
